@@ -1,0 +1,171 @@
+🚀 TaxFlow: Giải Pháp Tự Động Hóa Quản Lý Thuế GTGT Cho Doanh Nghiệp
+
+💡 Giới Thiệu
+TaxFlow là một ứng dụng web mạnh mẽ được phát triển nhằm tự động hóa quy trình quản lý và tính toán thuế Giá trị gia tăng (GTGT) cho các doanh nghiệp. Dự án này được thiết kế để đơn giản hóa các tác vụ phức tạp như nhập liệu hóa đơn, phân loại đầu vào/đầu ra, tính toán thuế phải nộp và tạo báo cáo định kỳ, giúp doanh nghiệp tiết kiệm thời gian, giảm thiểu sai sót và đảm bảo tuân thủ quy định về thuế.
+
+Là một sinh viên IT đang tìm kiếm cơ hội tại các công ty chuyên về kiểm toán, thuế và tư vấn, tôi đã phát triển TaxFlow để thể hiện khả năng giải quyết vấn đề thực tế bằng công nghệ, đặc biệt trong lĩnh vực tài chính - kế toán.
+
+✨ Các Chức Năng Chính
+TaxFlow được phát triển với ba nhóm chức năng chính: Cốt lõi, Tiện ích bổ sung và Nâng cao, mang lại trải nghiệm toàn diện cho người dùng.
+
+I. Cốt Lõi (Core Features)
+Các chức năng bắt buộc, là nền tảng của hệ thống:
+
+Đăng ký / Đăng nhập / Phân quyền:
+
+Người dùng có thể đăng ký tài khoản công ty, đăng nhập bằng email và mật khẩu.
+Hệ thống hỗ trợ phân quyền Admin và Kế toán, đảm bảo quyền truy cập phù hợp với từng vai trò.
+Dữ liệu nhạy cảm như mật khẩu được mã hóa an toàn bằng Bcrypt, và phiên đăng nhập được bảo vệ bởi JSON Web Tokens (JWT).
+Upload file hóa đơn (Excel/CSV):
+
+Cho phép người dùng tải lên file chứa dữ liệu giao dịch hóa đơn (đầu vào và đầu ra) dưới định dạng Excel hoặc CSV.
+Hệ thống kiểm tra định dạng tự động và hiển thị bản xem trước dữ liệu để người dùng rà soát trước khi xử lý.
+Tự động xử lý & tính thuế GTGT:
+
+Engine xử lý thông minh tự động phân tích dữ liệu từ file đã tải lên.
+Phân loại hóa đơn thành đầu vào và đầu ra.
+Áp dụng thuế suất tương ứng và tính toán tổng thuế GTGT đầu vào, đầu ra, cũng như số thuế GTGT phải nộp trong kỳ.
+Sinh báo cáo thuế định kỳ (PDF):
+
+Tạo ra báo cáo thuế GTGT tổng hợp theo quý một cách tự động.
+Cho phép xuất báo cáo dưới định dạng PDF, người dùng có thể tải về hoặc gửi qua email.
+Báo cáo được trình bày chuyên nghiệp, có logo công ty, thời gian tạo, và chữ ký điện tử của kế toán (nếu có).
+Lưu & quản lý lịch sử báo cáo:
+
+Toàn bộ các báo cáo đã tạo được lưu trữ an toàn và có thể dễ dàng tra cứu theo quý hoặc năm.
+Hỗ trợ các chức năng tải lại, xóa (với quyền phù hợp), và xem chi tiết nội dung báo cáo.
+II. Tiện Ích Bổ Sung (Bonus Utilities)
+Các chức năng giúp tăng trải nghiệm người dùng và hiệu quả công việc:
+
+Gửi email nhắc nộp thuế định kỳ:
+Hệ thống tự động gửi email nhắc nhở người dùng (kế toán/admin) về thời hạn tạo và nộp báo cáo thuế đúng hạn (thường là các ngày 20-25 của tháng cuối mỗi quý).
+Dashboard báo cáo trực quan:
+Cung cấp một Dashboard tương tác với các biểu đồ hiển thị tổng quan về thuế GTGT đầu vào/đầu ra, dòng tiền theo quý, và các loại hóa đơn phát sinh nhiều nhất (sử dụng thư viện biểu đồ như Chart.js hoặc Recharts).
+Kiểm tra lỗi và phát hiện hóa đơn trùng:
+Tự động phát hiện các lỗi trong dữ liệu đầu vào (định dạng sai, ngày không hợp lệ, thuế suất tính sai) và phát hiện hóa đơn trùng lặp theo mã số.
+Đưa ra cảnh báo rõ ràng để người dùng có thể chỉnh sửa trước khi dữ liệu được xử lý và xuất báo cáo.
+III. Nâng Cao (Advanced Features)
+Những chức năng tạo sự khác biệt và mang lại giá trị cao:
+
+Import hóa đơn tự động từ email:
+Tích hợp với Gmail API để tự động quét các email có đính kèm file hóa đơn (.xlsx, .pdf) từ các nhà cung cấp uy tín, sau đó tự động lưu trữ và xử lý như chức năng upload thủ công.
+Quản lý khách hàng / nhà cung cấp:
+Cho phép lưu trữ và quản lý danh sách khách hàng và nhà cung cấp (MST, tên công ty, địa chỉ).
+Khi nhập liệu hóa đơn, hệ thống tự động gợi ý dữ liệu dựa trên danh sách đã có, giúp tăng tốc độ và độ chính xác.
+Lịch công việc & deadline báo cáo:
+Giao diện dạng lịch trực quan, hiển thị các mốc quan trọng như hạn nộp thuế, hóa đơn chưa xử lý, và trạng thái của các báo cáo đã tạo.
+Xuất báo cáo theo mẫu chuẩn TCT:
+Khả năng tạo báo cáo đúng mẫu quy định của Tổng cục Thuế (ví dụ: mẫu 01/GTGT, 02/GTGT) và xuất ra định dạng PDF hoặc XML, sẵn sàng cho việc kê khai điện tử.
+Audit log – Nhật ký thao tác người dùng:
+Ghi lại tất cả các hành động quan trọng của người dùng (tạo, sửa, xóa báo cáo, upload file, thay đổi quyền) để phục vụ mục đích kiểm toán nội bộ và truy vết.
+Phê duyệt báo cáo nhiều cấp:
+Áp dụng quy trình làm việc (workflow) với nhiều cấp độ phê duyệt: Kế toán tạo báo cáo → Quản lý (Admin) duyệt → Gửi báo cáo.
+Hệ thống ghi lại trạng thái báo cáo và lịch sử phê duyệt, đảm bảo tính minh bạch và trách nhiệm.
+🛠️ Công Nghệ Sử Dụng
+Dự án được xây dựng với bộ công nghệ hiện đại và mạnh mẽ:
+
+Giao diện (Frontend):
+React.js: Thư viện JavaScript mạnh mẽ cho giao diện người dùng tương tác.
+TailwindCSS: Framework CSS tiện ích giúp xây dựng giao diện nhanh chóng và tùy biến cao.
+Recharts: Thư viện biểu đồ React giúp trực quan hóa dữ liệu hiệu quả trên Dashboard.
+Server (Backend):
+Node.js: Môi trường Runtime JavaScript cho phía Server.
+Express.js: Framework web nhanh và tối giản cho Node.js, dùng để xây dựng API.
+Multer: Middleware cho Express.js, xử lý việc upload file (Excel/CSV).
+xlsx: Thư viện mạnh mẽ để đọc và ghi các file Excel.
+Bảo mật:
+JWT (JSON Web Tokens): Để xác thực và ủy quyền người dùng.
+Bcrypt: Để mã hóa mật khẩu người dùng một cách an toàn.
+PDF & Email:
+PDFKit: Thư viện tạo tài liệu PDF trên Node.js.
+Nodemailer: Module Node.js để gửi email.
+Cơ sở dữ liệu (Database):
+PostgreSQL: Hệ quản trị cơ sở dữ liệu quan hệ mạnh mẽ và đáng tin cậy.
+Prisma ORM: ORM (Object-Relational Mapping) hiện đại, giúp tương tác với cơ sở dữ liệu một cách an toàn và hiệu quả.
+Triển khai (Deployment):
+Vercel: Nền tảng triển khai dễ dàng và nhanh chóng cho Frontend (React.js).
+Render: Nền tảng Cloud cho việc triển khai Backend (Node.js/Express) và cơ sở dữ liệu (PostgreSQL).
+☁️ Trải Nghiệm Ứng Dụng (Live Demo)
+Bạn có thể trải nghiệm trực tiếp ứng dụng TaxFlow tại:
+
+Frontend: [Link của bạn trên Vercel, ví dụ: https://taxflow.vercel.app]
+Backend API: [Link của bạn trên Render, ví dụ: https://taxflow-api.render.com]
+Tài khoản Demo:
+
+Admin:
+Email: admin@example.com
+Mật khẩu: admin123
+Kế toán:
+Email: accountant@example.com
+Mật khẩu: accountant123
+⚙️ Hướng Dẫn Cài Đặt và Chạy (Local)
+Để chạy dự án TaxFlow trên máy cục bộ của bạn, hãy làm theo các bước sau:
+
+Yêu cầu
+Node.js (v18+ hoặc mới hơn)
+npm hoặc Yarn
+PostgreSQL Database
+1. Clone Repository
+Bash
+
+git clone https://github.com/[Your-GitHub-Username]/TaxFlow.git
+cd TaxFlow
+2. Cấu hình Backend
+Bash
+
+cd backend
+npm install # hoặc yarn install
+Tạo một file .env trong thư mục backend và điền các biến môi trường sau:
+
+Đoạn mã
+
+DATABASE_URL="postgresql://[user]:[password]@[host]:[port]/[database]?schema=public"
+JWT_SECRET="[Một chuỗi ký tự ngẫu nhiên mạnh]"
+PORT=5000
+EMAIL_HOST="smtp.gmail.com"
+EMAIL_PORT=587
+EMAIL_USER="[Email của bạn để gửi thông báo]"
+EMAIL_PASS="[Mật khẩu ứng dụng cho email của bạn]"
+FRONTEND_URL="http://localhost:3000" # URL của frontend khi chạy local
+Lưu ý về DATABASE_URL: Đảm bảo kết nối đến cơ sở dữ liệu PostgreSQL của bạn.
+Lưu ý về EMAIL_USER và EMAIL_PASS: Nếu sử dụng Gmail, bạn cần tạo "Mật khẩu ứng dụng" (App password) thay vì mật khẩu tài khoản thông thường.
+Chạy migration và seed data (tạo dữ liệu mẫu ban đầu):
+
+Bash
+
+npx prisma migrate dev --name init # Tạo bảng cơ sở dữ liệu
+npx prisma db seed # Điền dữ liệu mẫu (ví dụ: tài khoản admin/kế toán demo)
+Khởi động Server Backend:
+
+Bash
+
+npm start # hoặc yarn start
+Server sẽ chạy trên http://localhost:5000.
+
+3. Cấu hình Frontend
+Bash
+
+cd ../frontend
+npm install # hoặc yarn install
+Tạo một file .env trong thư mục frontend và điền biến môi trường sau:
+
+Đoạn mã
+
+REACT_APP_API_URL="http://localhost:5000/api" # Trỏ đến API Backend của bạn
+Khởi động ứng dụng Frontend:
+
+Bash
+
+npm start # hoặc yarn start
+Ứng dụng sẽ mở trong trình duyệt của bạn tại http://localhost:3000.
+
+🤝 Đóng Góp
+Mọi sự đóng góp để cải thiện dự án này đều được hoan nghênh! Nếu bạn có bất kỳ ý tưởng, đề xuất tính năng hoặc muốn báo cáo lỗi, vui lòng mở một issue hoặc tạo pull request trên GitHub.
+
+✉️ Liên Hệ
+Nếu bạn có bất kỳ câu hỏi nào về dự án này, đừng ngần ngại liên hệ với tôi:
+
+📜 Giấy phép
+Dự án này được cấp phép theo Giấy phép MIT. Xem file LICENSE để biết thêm chi tiết.
+
+Cảm ơn bạn đã quan tâm đến TaxFlow!

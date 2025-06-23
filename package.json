@@ -1,0 +1,23 @@
+{
+  "name": "taxflow-project",
+  "version": "1.0.0",
+  "description": "Hệ thống tự động hóa kê khai thuế GTGT cho doanh nghiệp",
+  "author": "Họ và Tên của bạn <email@example.com>",
+  "license": "ISC",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm:dev:backend\" \"npm:dev:frontend\"",
+    "dev:backend": "npm run dev --workspace=backend",
+    "dev:frontend": "npm run dev --workspace=frontend",
+    "postinstall": "npm run db:generate --workspace=backend",
+    "clean": "rimraf ./node_modules ./backend/node_modules ./frontend/node_modules"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "rimraf": "^5.0.8"
+  }
+}

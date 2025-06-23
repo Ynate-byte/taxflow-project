@@ -1,0 +1,183 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ========= ENUMS =========
+enum VaiTroNguoiDung {
+  QUANTRIVIEN
+  KETOAN
+}
+
+enum LoaiHoaDon {
+  DAUVAO
+  DAURA
+}
+
+enum LoaiDoiTac {
+  KHACHHANG
+  NHACUNGCAP
+}
+
+enum TrangThaiBaoCao {
+  NHAP
+  CHODUYET
+  DADUYET
+  BITUCHOI
+  DANOP
+}
+
+enum TrangThaiCongViec {
+  DANGCHOLAM
+  HOANTHANH
+}
+
+
+// ========= MODELS =========
+
+model CongTy {
+  Id           Int      @id @default(autoincrement())
+  TenCongTy    String   @db.VarChar(255)
+  MaSoThue     String   @unique @db.VarChar(20)
+  DiaChi       String?
+  UrlLogo      String?
+  NgayTao      DateTime? @default(now()) @db.Timestamptz(6)
+  NguoiDung    NguoiDung[]
+  DoiTac       DoiTac[]
+  HoaDon       HoaDon[]
+  BaoCaoThue   BaoCaoThue[]
+  NhatKyHeThong NhatKyHeThong[]
+  CongViec     CongViec[]
+
+  @@map("CongTy")
+}
+
+model NguoiDung {
+  Id                 Int      @id @default(autoincrement())
+  IdCongTy           Int
+  Email              String   @unique @db.VarChar(255)
+  MatKhauMaHoa       String   @db.VarChar(255)
+  HoVaTen            String?  @db.VarChar(255)
+  VaiTro             VaiTroNguoiDung @default(KETOAN)
+  DangHoatDong       Boolean? @default(true)
+  NgayTao            DateTime? @default(now()) @db.Timestamptz(6)
+  BaoCaoThue         BaoCaoThue[]
+  CongViec           CongViec[]
+  LichSuDuyetBaoCao  LichSuDuyetBaoCao[]
+  CongTy             CongTy   @relation(fields: [IdCongTy], references: [Id], onDelete: Cascade)
+  NhatKyHeThong      NhatKyHeThong[]
+
+  // THÊM 2 DÒNG NÀY VÀO
+  googleAccessToken  String?
+  googleRefreshToken String?
+
+  @@map("NguoiDung")
+}
+
+model DoiTac {
+  Id           Int        @id @default(autoincrement())
+  IdCongTy     Int
+  MaSoThue     String     @db.VarChar(20)
+  TenDoiTac    String     @db.VarChar(255)
+  DiaChi       String?
+  LoaiDoiTac   LoaiDoiTac
+  NgayTao      DateTime?  @default(now()) @db.Timestamptz(6)
+  CongTy       CongTy     @relation(fields: [IdCongTy], references: [Id], onDelete: Cascade)
+  HoaDon       HoaDon[]
+
+  @@unique([IdCongTy, MaSoThue])
+  @@map("DoiTac")
+}
+
+model HoaDon {
+  Id            Int        @id @default(autoincrement())
+  IdCongTy      Int
+  IdDoiTac      Int?
+  KyHieuHoaDon  String?    @db.VarChar(50)
+  SoHoaDon      String     @db.VarChar(50)
+  NgayPhatHanh  DateTime   @db.Date
+  LoaiHoaDon    LoaiHoaDon
+  TienTruocThue Decimal    @db.Decimal(15, 2)
+  ThueSuatVAT   Int
+  TienThueVAT   Decimal?   @db.Decimal(15, 2)
+  TongTien      Decimal?   @db.Decimal(15, 2)
+  MoTa          String?
+  NgayTao       DateTime?  @default(now()) @db.Timestamptz(6)
+  CongTy        CongTy     @relation(fields: [IdCongTy], references: [Id], onDelete: Cascade)
+  DoiTac        DoiTac?    @relation(fields: [IdDoiTac], references: [Id], onDelete: SetNull)
+
+  @@unique([IdCongTy, KyHieuHoaDon, SoHoaDon])
+  @@map("HoaDon")
+}
+
+model BaoCaoThue {
+  Id                 Int               @id @default(autoincrement())
+  IdCongTy           Int
+  IdNguoiTao         Int?
+  NamBaoCao          Int
+  QuyBaoCao          Int
+  TongThueDauVao     Decimal?          @default(0.00) @db.Decimal(15, 2)
+  TongThueDauRa      Decimal?          @default(0.00) @db.Decimal(15, 2)
+  ThuePhaiNop        Decimal?          @default(0.00) @db.Decimal(15, 2)
+  TrangThai          TrangThaiBaoCao   @default(NHAP)
+  UrlFileXuat        String?
+  NgayTao            DateTime?         @default(now()) @db.Timestamptz(6)
+  NgayCapNhat        DateTime?         @default(now()) @db.Timestamptz(6)
+  CongTy             CongTy            @relation(fields: [IdCongTy], references: [Id], onDelete: Cascade)
+  NguoiDung          NguoiDung?        @relation(fields: [IdNguoiTao], references: [Id], onDelete: SetNull)
+  LichSuDuyetBaoCao  LichSuDuyetBaoCao[]
+  CongViec           CongViec[]
+
+  @@unique([IdCongTy, NamBaoCao, QuyBaoCao])
+  @@map("BaoCaoThue")
+}
+
+model LichSuDuyetBaoCao {
+  Id           Int        @id @default(autoincrement())
+  IdBaoCaoThue Int
+  IdNguoiDuyet Int
+  DaDuyet      Boolean
+  BinhLuan     String?
+  NgayDuyet    DateTime?  @default(now()) @db.Timestamptz(6)
+  BaoCaoThue   BaoCaoThue @relation(fields: [IdBaoCaoThue], references: [Id], onDelete: Cascade)
+  NguoiDung    NguoiDung  @relation(fields: [IdNguoiDuyet], references: [Id], onDelete: Cascade)
+
+  @@map("LichSuDuyetBaoCao")
+}
+
+model NhatKyHeThong {
+  Id           Int       @id @default(autoincrement())
+  IdNguoiDung  Int?
+  IdCongTy     Int?
+  LoaiHanhDong String    @db.VarChar(100)
+  ChiTiet      Json?     @db.JsonB
+  ThoiGian     DateTime? @default(now()) @db.Timestamptz(6)
+  CongTy       CongTy?   @relation(fields: [IdCongTy], references: [Id], onDelete: Cascade)
+  NguoiDung    NguoiDung? @relation(fields: [IdNguoiDung], references: [Id], onDelete: SetNull)
+
+  @@map("NhatKyHeThong")
+}
+
+model CongViec {
+  Id               Int                @id @default(autoincrement())
+  IdCongTy         Int
+  IdNguoiThucHien  Int?
+  TieuDe           String             @db.VarChar(255)
+  MoTa             String?
+  HanChot          DateTime?          @db.Timestamptz(6)
+  TrangThai        TrangThaiCongViec  @default(DANGCHOLAM)
+  IdBaoCaoLienQuan Int?
+  NgayTao          DateTime?          @default(now()) @db.Timestamptz(6)
+  CongTy           CongTy             @relation(fields: [IdCongTy], references: [Id], onDelete: Cascade)
+  NguoiDung        NguoiDung?         @relation(fields: [IdNguoiThucHien], references: [Id], onDelete: SetNull)
+  BaoCaoThue       BaoCaoThue?        @relation(fields: [IdBaoCaoLienQuan], references: [Id], onDelete: SetNull)
+
+  @@map("CongViec")
+}
