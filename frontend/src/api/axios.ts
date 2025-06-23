@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: 'http://localhost:8080/api',
+    // Sử dụng biến môi trường được inject bởi Vite/Vercel
+    baseURL: import.meta.env.VITE_REACT_APP_API_URL, 
 });
 
 api.interceptors.request.use(
@@ -17,25 +18,19 @@ api.interceptors.request.use(
     }
 );
 
-//Interceptor để xử lý lỗi xác thực trên mỗi PHẢN HỒI (RESPONSE)
 api.interceptors.response.use(
     (response) => {
-        // Bất kỳ status code nào nằm trong khoảng 2xx sẽ đi vào đây
         return response;
     },
     (error) => {
-        
         if (error.response && (error.response.status === 401 || error.response.status === 403)) {
-            
             localStorage.removeItem('token');
             localStorage.removeItem('user');
-            
             if (!window.location.pathname.includes('/login')) {
                 alert('Phiên đăng nhập của bạn đã hết hạn hoặc không hợp lệ. Vui lòng đăng nhập lại.');
                 window.location.href = '/login';
             }
         }
-
         return Promise.reject(error);
     }
 );
