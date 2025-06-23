@@ -33,6 +33,15 @@ app.get('/', (req, res) => {
 });
 
 const PORT = process.env.PORT || 8080;
+const corsOptions = {
+    // Thay thế bằng URL chính xác của frontend Vercel của bạn
+    origin: 'https://taxflow-project-frontend.vercel.app', // <--- DÁN URL FRONTTEND VÀO ĐÂY
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+    optionsSuccessStatus: 204
+};
+
+app.use(cors(corsOptions));
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}.`);
