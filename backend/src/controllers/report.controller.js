@@ -1,5 +1,6 @@
-const prisma = require('../config/prisma');
-const puppeteer = require('puppeteer');
+const prisma = require('../../config/prisma'); // Chú ý đường dẫn tương đối từ controller đến config
+const puppeteer = require('puppeteer-core'); // <-- Đảm bảo là puppeteer-core
+const chromium = require('@sparticvs/chromium'); // <-- THÊM DÒNG NÀY
 const { getReportHtml } = require('../services/pdfTemplate');
 const { logAction } = require('../services/logging.service');
 
@@ -55,7 +56,7 @@ exports.getSummary = async (req, res) => {
                 TrangThai: 'NHAP',
             },
         });
-        
+
         await logAction(userId, companyId, 'GET_REPORT_SUMMARY', { reportId: report.Id, year, quarter });
         res.status(200).json(report);
 
@@ -143,12 +144,19 @@ exports.generatePdfReport = async (req, res) => {
 
         const htmlContent = getReportHtml(summaryData);
 
-        const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox'] });
+        // CẤU HÌNH PUPPETEER CHO MÔI TRƯỜNG RENDER (ĐÃ SỬA LỖI)
+        const browser = await puppeteer.launch({
+            args: [...chromium.args, '--disable-setuid-sandbox', '--no-sandbox'],
+            executablePath: await chromium.executablePath(),
+            headless: chromium.headless,
+        });
+
         const page = await browser.newPage();
         await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
         const pdfBuffer = await page.pdf({ format: 'A4', printBackground: true });
         await browser.close();
 
+        await logAction(req.user.id, companyId, 'GENERATE_PDF_REPORT', { year, quarter }); // Thêm log action
         res.setHeader('Content-Type', 'application/pdf');
         res.setHeader('Content-Disposition', `attachment; filename=BaoCaoThue_Q${quarter}_${year}.pdf`);
         res.send(pdfBuffer);
@@ -168,13 +176,25 @@ exports.submitReport = async (req, res) => {
     }
 
     try {
-        const report = await prisma.BaoCaoThue.update({
-            where: { Id: parseInt(id), IdCongTy: companyId, TrangThai: { in: ['NHAP', 'BITUCHOI'] } },
-            data: { TrangThai: 'CHODUYET' }
-        });
+        const report = await prisma.$transaction(async (tx) => {
+            const report = await tx.BaoCaoThue.update({
+                where: { Id: parseInt(id), IdCongTy: companyId, TrangThai: { in: ['NHAP', 'BITUCHOI'] } },
+                data: { TrangThai: 'CHODUYET' }
+            });
 
-        await logAction(userId, companyId, 'SUBMIT_REPORT', { reportId: report.Id });
-        res.status(200).json(report);
+            await tx.LichSuDuyetBaoCao.create({
+                data: {
+                    IdBaoCaoThue: report.Id,
+                    IdNguoiDuyet: userId,
+                    DaDuyet: true,
+                    BinhLuan: 'Đã phê duyệt'
+                }
+            });
+
+            await logAction(userId, companyId, 'SUBMIT_REPORT', { reportId: report.Id });
+            return report;
+        });
+        res.status(200).json(result);
     } catch (error) {
         res.status(400).json({ message: "Không thể trình báo cáo. Báo cáo có thể đã được trình hoặc không tồn tại." });
     }
@@ -226,7 +246,7 @@ exports.rejectReport = async (req, res) => {
     }
 
     try {
-         const result = await prisma.$transaction(async (tx) => {
+        const result = await prisma.$transaction(async (tx) => {
             const report = await tx.BaoCaoThue.update({
                 where: { Id: parseInt(id), IdCongTy: companyId, TrangThai: 'CHODUYET' },
                 data: { TrangThai: 'BITUCHOI' }
