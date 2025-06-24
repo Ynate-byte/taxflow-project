@@ -1,4 +1,4 @@
-const prisma = require('../../config/prisma.js');
+const prisma = require('../config/prisma')
 const puppeteer = require('puppeteer'); 
 const { getReportHtml } = require('../services/pdfTemplate');
 const { logAction } = require('../services/logging.service');
