@@ -1,6 +1,5 @@
-const prisma = require('../../config/prisma'); // Chú ý đường dẫn tương đối từ controller đến config
-const puppeteer = require('puppeteer-core'); // <-- Đảm bảo là puppeteer-core
-const chromium = require('@sparticvs/chromium'); // <-- THÊM DÒNG NÀY
+const prisma = require('../../config/prisma');
+const puppeteer = require('puppeteer'); 
 const { getReportHtml } = require('../services/pdfTemplate');
 const { logAction } = require('../services/logging.service');
 
@@ -56,7 +55,7 @@ exports.getSummary = async (req, res) => {
                 TrangThai: 'NHAP',
             },
         });
-
+        
         await logAction(userId, companyId, 'GET_REPORT_SUMMARY', { reportId: report.Id, year, quarter });
         res.status(200).json(report);
 
@@ -144,19 +143,21 @@ exports.generatePdfReport = async (req, res) => {
 
         const htmlContent = getReportHtml(summaryData);
 
-        // CẤU HÌNH PUPPETEER CHO MÔI TRƯỜNG RENDER (ĐÃ SỬA LỖI)
+        // CẤU HÌNH PUPPETEER CHO MÔI TRƯỜNG RENDER (ĐÃ SỬA LỖI THEO TÀI LIỆU RENDER)
         const browser = await puppeteer.launch({
-            args: [...chromium.args, '--disable-setuid-sandbox', '--no-sandbox'],
-            executablePath: await chromium.executablePath(),
-            headless: chromium.headless,
+            args: ['--no-sandbox', '--disable-setuid-sandbox'], // Các args cơ bản
+            // Quan trọng: Sử dụng biến môi trường PUPPETEER_EXECUTABLE_PATH nếu có,
+            // nếu không thì Puppeteer sẽ cố gắng tìm mặc định.
+            executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || puppeteer.executablePath(),
+            headless: true, // Chạy ở chế độ không giao diện
         });
-
+        
         const page = await browser.newPage();
         await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
         const pdfBuffer = await page.pdf({ format: 'A4', printBackground: true });
         await browser.close();
 
-        await logAction(req.user.id, companyId, 'GENERATE_PDF_REPORT', { year, quarter }); // Thêm log action
+        await logAction(req.user.id, companyId, 'GENERATE_PDF_REPORT', { year, quarter });
         res.setHeader('Content-Type', 'application/pdf');
         res.setHeader('Content-Disposition', `attachment; filename=BaoCaoThue_Q${quarter}_${year}.pdf`);
         res.send(pdfBuffer);

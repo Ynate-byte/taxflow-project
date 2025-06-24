@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon server.js",
     "db:generate": "prisma generate",
-    "start": "node server.js"
+    "start": "node server.js" 
   },
   "type": "commonjs",
   "dependencies": {
@@ -22,8 +22,7 @@
     "multer": "^1.4.5-lts.1",
     "node-cron": "^4.1.1",
     "nodemailer": "^7.0.3",
-    "puppeteer-core": "^22.13.1",
-    "@sparticvs/chromium": "127.0.0",
+    "puppeteer": "^22.13.1",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
