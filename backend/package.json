@@ -23,7 +23,8 @@
     "node-cron": "^4.1.1",
     "nodemailer": "^7.0.3",
     "puppeteer-core": "^22.13.1",
-    "@sparticvs/chromium": "^127.0.0"
+    "@sparticvs/chromium": "^127.0.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "nodemon": "^3.1.4",
